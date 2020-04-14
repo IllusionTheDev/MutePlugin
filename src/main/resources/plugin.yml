@@ -1,0 +1,13 @@
+name: MutePlugin
+version: 1
+description: Mute Plugin
+
+main: me.imillusion.muteplugin.MutePlugin
+
+commands:
+  mute:
+    usage: /<command> <user>
+    description: Mutes a player
+  unmute:
+    usage: /<command> <user>
+    description: Unmutes a player

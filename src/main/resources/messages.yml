@@ -1,0 +1,20 @@
+mute-no-permission: "&cYou do not have permission to mute players"
+unmute-no-permission: "&cYou do not have permission to unmute players"
+
+mute-invalid-format: "&cInvalid format, Example: /mute <user> 5m"
+mute-already-muted: "&cThat player is already muted"
+
+unmute-invalid-format: "&cInvalid format. Example: /unmute <user>"
+unmute-player-not-muted: "&cThat player isn't muted"
+
+mute-success:
+  broadcast: "&c%target% has been muted by %player%" #leave blank for no broadcast
+  target: "&cYou have been muted by %player%."
+  player: "&cYou have muted %target%"
+
+unmute-success:
+  broadcast: ""
+  target: "&cYou have been unmuted."
+  player: "&cYou have unmuted %target%"
+
+player-muted: "&cYou are muted."
