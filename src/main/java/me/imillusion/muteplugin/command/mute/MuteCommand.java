@@ -38,17 +38,17 @@ public class MuteCommand implements CommandExecutor {
             return true;
         }
 
-        Instant instant = Instant.ofEpochSecond(main.getMuteManager().parseTotalSeconds(args[1]));
+        long time = main.getMuteManager().parseTotalSeconds(args[1]);
 
-        main.getMuteManager().getMutes().put(uuid, instant);
+        main.getMuteManager().mute(uuid, time);
 
         String broadcast = main.getRawMessage("mute-success.broadcast");
         String target = main.getRawMessage("mute-success.target");
         String player = main.getRawMessage("mute-success.player");
 
-        broadcast = broadcast.replace("%playet%", sender.getName()).replace("%target%", p.getName());
-        target = target.replace("%playet%", sender.getName()).replace("%target%", p.getName());
-        player = player.replace("%playet%", sender.getName()).replace("%target%", p.getName());
+        broadcast = broadcast.replace("%player%", sender.getName()).replace("%target%", p.getName());
+        target = target.replace("%player%", sender.getName()).replace("%target%", p.getName());
+        player = player.replace("%player%", sender.getName()).replace("%target%", p.getName());
 
         if(!broadcast.isEmpty())
             Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcast));

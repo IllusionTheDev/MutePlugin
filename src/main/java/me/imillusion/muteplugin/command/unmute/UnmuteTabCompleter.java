@@ -21,9 +21,10 @@ public class UnmuteTabCompleter implements TabCompleter {
 
         List<String> players = new ArrayList<>();
 
-        for(Player p : Bukkit.getOnlinePlayers())
-            if(main.getMuteManager().getMutes().containsKey(p.getUniqueId()))
-                players.add(p.getName());
+        if(strings.length == 1)
+            for(Player p : Bukkit.getOnlinePlayers())
+                if(main.getMuteManager().getMutes().containsKey(p.getUniqueId()))
+                    players.add(p.getName());
 
         return players;
     }

@@ -22,9 +22,10 @@ public class MuteTabCompleter implements TabCompleter {
 
         List<String> list = new ArrayList<>();
 
-        for(Player p : Bukkit.getOnlinePlayers())
-            if(!main.getMuteManager().getMutes().containsKey(p.getUniqueId()))
-                list.add(p.getName());
+        if(strings.length == 1)
+            for(Player p : Bukkit.getOnlinePlayers())
+                if(!main.getMuteManager().getMutes().containsKey(p.getUniqueId()))
+                    list.add(p.getName());
 
         return list;
     }

@@ -3,6 +3,7 @@ package me.imillusion.muteplugin.manager;
 import lombok.Getter;
 import me.imillusion.muteplugin.MutePlugin;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -12,13 +13,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MuteManager {
 
     private MutePlugin main;
 
+    //----- REGEX -----
+
+    private Pattern format = Pattern.compile("(\\d+[a-zA-Z]?)");
+
     @Getter
-    private Map<UUID, Instant> mutes = new HashMap<>(); //I would usually make my own mute class but this only has 2 arguments
+    private Map<UUID, Long> mutes = new HashMap<>(); //I would usually make my own mute class but this only has 2 arguments
 
     private Map<String, Long> multipliers = new HashMap<>();
 
@@ -28,8 +35,8 @@ public class MuteManager {
         File file = new File(main.getDataFolder(), "mutes.yml");
 
         for(UUID uuid : mutes.keySet())
-            if(mutes.get(uuid).getEpochSecond() > Instant.now().getEpochSecond())
-                cfg.set("mutes.uuid", mutes.get(uuid).getEpochSecond());
+            if(mutes.get(uuid) > Instant.now().getEpochSecond())
+                cfg.set("mutes.uuid", mutes.get(uuid));
 
         try {
             cfg.save(file);
@@ -44,12 +51,12 @@ public class MuteManager {
 
         if(cfg.contains("mutes"))
             for(String key : cfg.getConfigurationSection("mutes").getKeys(false))
-                mutes.put(UUID.fromString(key), Instant.ofEpochSecond(cfg.getLong("mutes." + key)));
+                mutes.put(UUID.fromString(key), cfg.getLong("mutes." + key));
     }
 
-    public void mute(UUID user, Instant instant)
+    public void mute(UUID user, long time)
     {
-        mutes.put(user, instant);
+        mutes.put(user, time);
     }
 
     public MuteManager(MutePlugin main) {
@@ -68,25 +75,19 @@ public class MuteManager {
     {
         long seconds = 0;
 
-        for(String s : input.split("\\d"))
+        for(int i = 1; i <= input.length() / 2; i++)
         {
-            String mult = s.replaceAll("\\d", "");
+            String group = input.substring((i-1) * 2, i * 2);
 
-            if(!multipliers.containsKey(mult))
+            String num = String.valueOf(group.charAt(0));
+            String mult = String.valueOf(group.charAt(1));
+
+            if(!num.matches("\\d+") || !multipliers.containsKey(mult))
                 return 0L;
 
-            String num = s.replace(mult, "");
+            seconds += (Long.valueOf(num) * multipliers.get(mult));
 
-            if(!StringUtils.isNumeric(num))
-                return 0L;
-
-            long time = Long.parseLong(num);
-
-            seconds += (time * multipliers.get(mult));
         }
-
-        if(seconds == 0)
-            return 0L;
 
         return Instant.now().getEpochSecond() + seconds;
     }
